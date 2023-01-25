@@ -1,4 +1,4 @@
-<h1>Registrarse</h1>
+<h1>Ingresar</h1>
 
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -10,20 +10,13 @@
     </div>
 @endif
 
-
-<form action="/registro" method="post">
+<form action="/login" method="post">
     @csrf
-    <label for="">Ingrese Nombre</label>
-    <input type="text" name="name">
-    <br>
     <label for="">Ingrese Correo</label>
     <input type="email" name="email">
     <br>
-    <label for="">Ingrese Contraseña</label>
+    <label for="">Ingrese su Contraseña</label>
     <input type="password" name="password">
     <br>
-    <label for="">Repetir Contraseña</label>
-    <input type="password" name="c_password">
-    <br>
-    <input type="submit" value="Registrarse">
+    <input type="submit" value="Ingresar">
 </form>
