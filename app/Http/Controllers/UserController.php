@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use DataTables;
 
 class UserController extends Controller
 {
@@ -15,8 +16,24 @@ class UserController extends Controller
     public function index()
     {
         // listar
+        // select * from users
         $usuarios = User::all();
         return view("admin.usuario.listar", compact("usuarios"));
+    }
+
+    public function listaUsuariosDT(Request $request)
+    {
+        if($request->ajax()){
+            $data = User::latest()->get();
+            return DataTables::of($data)
+                                ->addIndexColumn()
+                                ->addColumn('accion', function($row){
+                                    $botones = '<a href="javascript:void(0)">Editar</a><a href="javascript:void(0)">Eliminar</a>';
+                                })
+                                ->rawColumns(['accion'])
+                                ->make(true);
+        }
+        
     }
 
     /**

@@ -20,6 +20,8 @@ Route::post("/login", [AuthController::class, "login"])->name("ingresar");
 // Cerrar sesion
 Route::post("/salir", [AuthController::class, "logout"])->name("logout");
 
+// lista de usuarios con Datatables (Ajax)
+Route::get("/usuarios-dt", [UserController::class, "listaUsuariosDT"])->name("listaUsuariosDT");
 // CRUD Usuarios
 // index, show, create, store, edit, update, destroy
 Route::resource("usuario", UserController::class);
