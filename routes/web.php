@@ -20,13 +20,19 @@ Route::post("/login", [AuthController::class, "login"])->name("ingresar");
 // Cerrar sesion
 Route::post("/salir", [AuthController::class, "logout"])->name("logout");
 
-// lista de usuarios con Datatables (Ajax)
-Route::get("/usuarios-dt", [UserController::class, "listaUsuariosDT"])->name("listaUsuariosDT");
-// CRUD Usuarios
-// index, show, create, store, edit, update, destroy
-Route::resource("usuario", UserController::class);
 
-Route::get("/admin", function(){
-    // resource/views/admin/admin.blade.php
-    return view("admin.admin");
-})->middleware("auth");
+Route::group(["prefix"=> "admin"], function(){
+
+    // lista de usuarios con Datatables (Ajax)
+    Route::get("usuarios-dt", [UserController::class, "listaUsuariosDT"])->name("listaUsuariosDT");
+    // CRUD Usuarios
+    // index, show, create, store, edit, update, destroy
+    Route::resource("usuario", UserController::class);
+    
+    Route::get("/", function(){
+        // resource/views/admin/admin.blade.php
+        return view("admin.admin");
+    })->middleware("auth");
+
+});
+

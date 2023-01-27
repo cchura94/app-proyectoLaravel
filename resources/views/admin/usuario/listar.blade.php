@@ -1,39 +1,14 @@
 @extends("layouts.admin")
 
-@section("contenedor")
+@section("titulo", "Lista de usuarios (DataTables)")
 
-<div class="row">
-    <div class="col-md-12">
+@section("styles")
 
-        <div class="card">
+<link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 
-            <h1>Lista de usuarios (DataTables)</h1>
+@endsection
 
-            <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-
-
-
-
-            <table class="yajra-datatable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Correo</th>
-                        <th>Accion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-
-            </table>
-
-
-        </div>
-
-    </div>
-</div>
-
+@section("scripts")
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
@@ -65,5 +40,37 @@
     });
 </script>
 
+
+@endsection
+
+
+@section("contenedor")
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <table class="yajra-datatable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>
 
 @endsection

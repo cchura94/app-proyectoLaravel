@@ -44,6 +44,8 @@ class UserController extends Controller
     public function create()
     {
         // cargar el form de creacion
+
+        return view("admin.usuario.nuevo");
     }
 
     /**
