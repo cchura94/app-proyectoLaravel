@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\UserController;
 
 
@@ -28,6 +32,12 @@ Route::group(["prefix"=> "admin"], function(){
     // CRUD Usuarios
     // index, show, create, store, edit, update, destroy
     Route::resource("usuario", UserController::class);
+
+    // CRUD Producto
+    Route::resource("categoria", CategoriaController::class);
+    Route::resource("producto", ProductoController::class);
+    Route::resource("pedido", PedidoController::class);
+    Route::resource("cliente", ClienteController::class);
     
     Route::get("/", function(){
         // resource/views/admin/admin.blade.php
