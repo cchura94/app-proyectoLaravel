@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductosExport;
 use App\Models\Categoria;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductoController extends Controller
 {
@@ -20,6 +22,17 @@ class ProductoController extends Controller
         $categorias = Categoria::get();
 
         return view("admin.producto.listar", ["productos" => $productos, "categorias" => $categorias]);
+    }
+
+    public function exportarEnExcel(Request $request)
+    {
+        $precio = $request->precio;
+        $fecha = $request->fecha;
+        if(isset($precio)){
+            return Excel::download(new ProductosExport($precio), 'productos.xlsx');
+        }
+
+        return Excel::download(new ProductosExport, 'productos.xlsx');
     }
 
     /**

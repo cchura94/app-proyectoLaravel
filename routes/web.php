@@ -29,6 +29,10 @@ Route::group(["prefix"=> "admin"], function(){
 
     // lista de usuarios con Datatables (Ajax)
     Route::get("usuarios-dt", [UserController::class, "listaUsuariosDT"])->name("listaUsuariosDT");
+    
+    // exportacion excel
+    Route::get("/producto/exportar-excel", [ProductoController::class, "exportarEnExcel"]);
+    
     // CRUD Usuarios
     // index, show, create, store, edit, update, destroy
     Route::resource("usuario", UserController::class);
