@@ -35,6 +35,17 @@ Route::group(["prefix"=> "admin"], function(){
 
     // CRUD Producto
     Route::resource("categoria", CategoriaController::class);
+    // GET   /producto              producto.index
+    // GET   /producto/create        producto.create
+    // POST  /producto              producto.store
+    // GET   /producto/{id}         producto.show
+    // GET   /producto/{id}/edit    producto.edit
+    // PUT   /producto/{id}         producto.update
+    // DELETE /producto/{id}        producto.destroy
+    Route::resource("producto", ProductoController::class);
+
+    // CRUD Cliente
+    Route::resource("clientes", ClienteController::class);
     Route::resource("producto", ProductoController::class);
     Route::resource("pedido", PedidoController::class);
     Route::resource("cliente", ClienteController::class);
