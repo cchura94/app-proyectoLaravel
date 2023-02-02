@@ -15,13 +15,25 @@ class ProductoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // /producto?page=2
-        $productos = Producto::orderBy("id", "desc")->paginate(2);
-        $categorias = Categoria::get();
+        if($request->buscar){
+            $productos = Producto::where('nombre','like', '%'.$request->buscar.'%' )
+                                    ->orderBy("id", "desc")
+                                    ->paginate(5);
+            $categorias = Categoria::get();
+    
+            return view("admin.producto.listar", ["productos" => $productos, "categorias" => $categorias]);
 
-        return view("admin.producto.listar", ["productos" => $productos, "categorias" => $categorias]);
+
+        }else{
+            // /producto?page=2
+            $productos = Producto::orderBy("id", "desc")->paginate(5);
+            $categorias = Categoria::get();
+    
+            return view("admin.producto.listar", ["productos" => $productos, "categorias" => $categorias]);
+
+        }
     }
 
     public function exportarEnExcel(Request $request)
@@ -104,7 +116,11 @@ class ProductoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $producto = Producto::findOrFail($id);
+
+        $categorias = Categoria::get();
+
+        return view("admin.producto.editar", compact("producto", "categorias"));
     }
 
     /**
@@ -116,7 +132,39 @@ class ProductoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+
+        // validar
+        $request->validate([
+            "nombre" => "required|string",
+            "categoria_id" => "required",
+        ]);
+
+        // modificar
+        $producto = Producto::findOrFail($id);
+        $producto->nombre = $request->nombre;
+        $producto->precio = $request->precio;
+        $producto->cantidad = $request->cantidad;
+        $producto->categoria_id = $request->categoria_id;
+        $producto->descripcion = $request->descripcion;
+        $producto->update();
+
+        
+        // subir imagen
+        $ruta_imagen = "";
+        if($file = $request->file("imagen")){
+            $ruta_imagen =  time()."-". $file->getClientOriginalName();
+            $file->move("imagenes", $ruta_imagen);
+
+            $ruta_imagen = "imagenes/".$ruta_imagen;
+
+            $producto->imagen = $ruta_imagen;
+            $producto->update();
+        }
+
+        // redireccionar
+
+        return redirect("/admin/producto")->with("mensaje","Producto actualizado");
     }
 
     /**
@@ -127,6 +175,9 @@ class ProductoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $producto = Producto::findOrFail($id);
+        $producto->delete();
+
+        return redirect("/admin/producto")->with("mensaje","Producto eliminado");
     }
 }

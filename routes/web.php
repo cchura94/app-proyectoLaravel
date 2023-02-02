@@ -31,7 +31,7 @@ Route::group(["prefix"=> "admin"], function(){
     Route::get("usuarios-dt", [UserController::class, "listaUsuariosDT"])->name("listaUsuariosDT");
     
     // exportacion excel
-    Route::get("/producto/exportar-excel", [ProductoController::class, "exportarEnExcel"]);
+    Route::get("/producto/exportar-excel", [ProductoController::class, "exportarEnExcel"])->name("producto_excel");
     
     // CRUD Usuarios
     // index, show, create, store, edit, update, destroy
