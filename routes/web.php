@@ -25,14 +25,17 @@ Route::post("/login", [AuthController::class, "login"])->name("ingresar");
 Route::post("/salir", [AuthController::class, "logout"])->name("logout");
 
 
-Route::group(["prefix"=> "admin"], function(){
+Route::prefix('admin')->middleware(['auth'])->group(function(){
 
     // lista de usuarios con Datatables (Ajax)
     Route::get("usuarios-dt", [UserController::class, "listaUsuariosDT"])->name("listaUsuariosDT");
     
     // exportacion excel
     Route::get("/producto/exportar-excel", [ProductoController::class, "exportarEnExcel"])->name("producto_excel");
-    
+    // buscar cliente ajax
+    Route::get("/cliente/buscar", [ClienteController::class, "index_ajax"])->name("index_ajax");
+    // guardar Cliente axios
+    Route::post("/cliente/guardar_axios", [ClienteController::class, "guardar_axios"])->name("guardar_axios");
     // CRUD Usuarios
     // index, show, create, store, edit, update, destroy
     Route::resource("usuario", UserController::class);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -14,6 +15,27 @@ class ClienteController extends Controller
     public function index()
     {
         //
+    }
+
+    public function index_ajax(Request $request)
+    {
+        //if($request->ajax()){
+            $cliente = Cliente::orWhere('nombre_completo', 'like', "%$request->buscar%")
+                                ->orWhere('correo', 'like', "%$request->buscar%")
+                                ->firstOrFail();
+            return response()->json($cliente, 200);
+        //}
+    }
+
+    public function guardar_axios(Request $request)
+    {
+        $clie = new Cliente();
+        $clie->nombre_completo = $request->nombre_completo;
+        $clie->correo = $request->correo;
+        $clie->telefono = $request->telefono;
+        $clie->save();
+
+        return response()->json($clie, 201);
     }
 
     /**

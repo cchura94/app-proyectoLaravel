@@ -10,8 +10,12 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-9">
+                        
+
+                        <!--
                         <a href="/admin/producto/create" class="btn btn-warning">Nuevo Producto</a>
                         <a href="{{ url('/admin/producto/create') }}" class="btn btn-primary">Nuevo Producto</a>
+                        -->
                         <a href="{{ route('producto.create') }}" class="btn btn-info">Nuevo Producto</a>
                         @if(($productos->total() > 0))
                         <a href="{{ route('producto_excel') }}" class="btn btn-warning">Exportar en Excel</a>
@@ -20,6 +24,12 @@
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Nuevo Producto Modal
                         </button>
+
+                        <form action="/admin" method="get">
+                            <input type="date" name="from">
+                            <input type="date" name="to">
+                            <input type="submit">
+                        </form>
 
                     </div>
                     <div class="col-md-3">

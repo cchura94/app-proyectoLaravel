@@ -23,7 +23,7 @@ class PedidoController extends Controller
      */
     public function create()
     {
-        //
+        return view("admin.pedido.nuevo");
     }
 
     /**
