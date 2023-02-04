@@ -1,3 +1,6 @@
+@extends("layouts.admin")
+
+@section("contenedor")
 <h1>ADMINISTRADOR</h1>
 
 {{ Auth::user() }}
@@ -6,3 +9,5 @@
     @csrf
     <input type="submit" value="Cerrar Sesion">
 </form>
+
+@endsection

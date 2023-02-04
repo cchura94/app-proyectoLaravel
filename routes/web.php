@@ -36,6 +36,8 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::get("/cliente/buscar", [ClienteController::class, "index_ajax"])->name("index_ajax");
     // guardar Cliente axios
     Route::post("/cliente/guardar_axios", [ClienteController::class, "guardar_axios"])->name("guardar_axios");
+    // obtener la lista de producto axios
+    Route::get("/producto/listar_axios", [ProductoController::class, "listarAxios"])->name("listarAxios");
     // CRUD Usuarios
     // index, show, create, store, edit, update, destroy
     Route::resource("usuario", UserController::class);

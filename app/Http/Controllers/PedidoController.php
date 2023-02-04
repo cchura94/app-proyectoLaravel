@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pedido;
 use Illuminate\Http\Request;
 
 class PedidoController extends Controller
@@ -13,7 +14,10 @@ class PedidoController extends Controller
      */
     public function index()
     {
-        //
+        $pedidos = Pedido::orderBy('id', 'desc')->paginate();
+
+        return view('admin.pedido.lista', compact('pedidos'));
+
     }
 
     /**
@@ -34,7 +38,30 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "cliente_id" => "required"
+        ]);
+
+        $cod_pedido = Pedido::generateInvoiceNumber();
+
+        // guarda el pedido
+        $pedido = new Pedido();
+        $pedido->cod_pedido = $cod_pedido;
+        $pedido->cliente_id = $request->cliente_id;
+        $pedido->fecha = date('Y-m-d H:i:s');
+        $pedido->estado = 1;
+        $pedido->save();
+
+        $carrito = $request->carrito;
+
+        foreach ($carrito as $prod) {
+            $pedido->productos()->attach($prod["id"], ["cantidad" => $prod["cantidad"]]);
+        }
+
+        $pedido->estado = 2;
+        $pedido->update();
+        
+        return response()->json(["mensaje" => "Pedido Registrado"], 201);
     }
 
     /**

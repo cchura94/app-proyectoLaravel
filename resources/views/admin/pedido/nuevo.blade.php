@@ -8,6 +8,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
+                <h5>Cliente</h5>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row">
@@ -31,12 +32,15 @@ Nuevo Cliente
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Nuevo Cliente</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <label for="">Nombre Cliente</label>
         <input type="text" id="clie_nombre_completo" class="form-control">
-        <input type="text" id="clie_correo" class="form-control">
+        <label for="">Correo</label>
+        <input type="email" id="clie_correo" class="form-control">
+        <label for="">Telefono</label>
         <input type="text" id="clie_telefono" class="form-control">
         
       </div>
@@ -60,9 +64,57 @@ Nuevo Cliente
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                
+                <h5>Seleccion de Producto</h5>
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label for="">Seleccionar Producto</label>
+                                <select id="select_clie_id" class="form-control">
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="">Precio</label>
+                                <input type="number" id="input_precio" step="0.01" class="form-control" readonly>
+                            
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">Asignar Cantidad</label>
+                                <input type="number" id="input_cantidad" class="form-control" value="1" min="1" max="100">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">Asignar al Pedido</label>
+                                <button class="btn btn-info btn-block" onclick="addProducto()">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>                
             </div>
         </div>        
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5>Lisa de Producto (CARRITO)</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>NOMBRE</th>
+                            <th>PRECIO</th>
+                            <th>CANTIDAD</th>
+                            <th>ST</th>
+                            <th>ACCION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carrito"></tbody>
+                </table>
+
+                <button type="button" onclick="enviarPedidoBD()">Guardar Pedido</button>
+            </div>
+        </div>
     </div>
 
 
@@ -79,6 +131,12 @@ Nuevo Cliente
 
 <script>
     let cliente = null;
+    let productos = [];
+    let producto_seleccionado = null;
+    let carrito = [];
+
+
+    getProductos();
 
     function buscarCliente() {
 
@@ -94,12 +152,15 @@ Nuevo Cliente
                     document.getElementById("cliente_html").innerHTML = `
                     <div class="row">
                         <div class="col-md-4">
+                        <label>Nombre CLiente</label>
                         <input type="text" class="form-control" value="${cliente.nombre_completo}" readonly>
                         </div>
                         <div class="col-md-4">
+                        <label>Telefono</label>
                         <input type="text" class="form-control" value="${cliente.telefono}" readonly>
                         </div>
                         <div class="col-md-4">
+                        <label>Correo</label>
                         <input type="text" class="form-control" value="${cliente.correo}" readonly>
                         </div>
                     </div>
@@ -147,6 +208,95 @@ Nuevo Cliente
                     `;
 
     }
+
+    async function getProductos() {
+        const {data} = await axios.get('/admin/producto/listar_axios');
+        productos = data;
+
+        cargarDatosAlSelect()
+        
+    }
+
+    function cargarDatosAlSelect() {
+        opciones = `<option value="">Seleccione producto</option>`;
+        productos.forEach(prod => {
+            opciones += `<option value="${prod.id}">${prod.nombre}</option>`;
+        });
+
+        document.getElementById("select_clie_id").innerHTML = opciones;
+    }
+
+
+    document.getElementById("select_clie_id").onchange = function() {
+        let prod_select = this.value;
+        producto_seleccionado = productos.find(option => option.id == prod_select);
+        console.log(producto_seleccionado);
+        document.getElementById("input_precio").value = producto_seleccionado.precio
+    };
+
+    function addProducto() {
+        
+        let cantidad = document.getElementById("input_cantidad").value
+        let prod = {
+            id: producto_seleccionado.id,
+            nombre: producto_seleccionado.nombre,
+            precio: producto_seleccionado.precio,
+            cantidad: cantidad
+        }
+
+        carrito.push(prod)
+
+        console.log(carrito);
+
+        actualizarCarrito();
+    }    
+
+    function actualizarCarrito() {
+        let html_table = "";
+        carrito.forEach(prod => {
+            html_table += `
+                <tr>
+                    <td>${prod.nombre}</td>
+                    <td>${prod.precio}</td>
+                    <td>${prod.cantidad}</td>
+                    <td>${prod.cantidad * prod.precio }</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="quitarProducto(${prod.id})">X</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("carrito").innerHTML = html_table;
+    }
+
+    function quitarProducto(id_prod) {
+        carrito.forEach(prod_c => {
+            if (prod_c.id == id_prod) {
+                carrito.splice(carrito.indexOf(prod_c), 1);
+            }
+        })
+        
+        actualizarCarrito();
+    }
+
+    async function enviarPedidoBD() {
+
+        let datos = {
+            cliente_id: cliente.id,
+            carrito: carrito
+        }
+
+        await axios.post('/admin/pedido', datos)     
+        
+        Swal.fire({
+                        title: 'Pedido Registrado!',
+                        text: 'Pedido registrado',
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    })
+    }
+    
     
 </script>
 @endsection

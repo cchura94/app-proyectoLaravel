@@ -36,6 +36,12 @@ class ProductoController extends Controller
         }
     }
 
+    public function listarAxios()
+    {
+        $productos = Producto::orderBy("id", "desc")->get();
+        return response()->json($productos, 200);
+    }
+
     public function exportarEnExcel(Request $request)
     {
         $precio = $request->precio;
